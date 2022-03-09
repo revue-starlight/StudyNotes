@@ -20,11 +20,9 @@ typedef struct {int args;} arg;
 volatile atomic_flag flag = {0};
 volatile int x = 0;
 void* fn(void *args){
-    asm("mfence");
     arg *argv = (arg*)args;
     ret *r = malloc(sizeof(ret));
     int n = argv->args;
-    asm("mfence");
     for (int i=0;i<n;i++){
         while (atomic_flag_test_and_set(&flag) == 1);
         ++x;
@@ -44,7 +42,6 @@ int main(){
     pthread_create(&p1,NULL,fn,(void*)(&arg1));
 
     pthread_create(&p2,NULL,fn,(void*)(&arg2));
-
     pthread_join(p1,(void**)(&r1));
     pthread_join(p2,(void**)(&r2));
 

@@ -1,3 +1,13 @@
+/**
+ * @file pthread_create.c
+ * @author revue-starlight (you@domain.com)
+ * @brief 一个简单的程序，教你如何利用c语言自带的mutex锁实现互斥区。
+ * @version 0.1
+ * @date 2022-03-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>

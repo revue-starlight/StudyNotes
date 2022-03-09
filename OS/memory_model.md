@@ -80,6 +80,8 @@ me, [3/5/22 11:48 AM]
 ```
 
 ### Acquire/Release
+it only applies a happens-before relationship to dependent variables. 
+This allows for a relaxing of the synchronization required between independent reads of independent writes. 
 
 
 # 资料

@@ -123,13 +123,33 @@ std::atomic is guaranteed to be a "compiler barrier", but in other cases, the co
 while (true); ./a.out | head -n 1000 | uniq -c
 ```
 
+## volatile 干了啥？
+
+    Every access (read or write operation, member function call, etc.) made through a glvalue expression of volatile-qualified type is treated as a visible side-effect for the purposes of optimization (that is, within a single thread of execution, volatile accesses cannot be optimized out or reordered with another visible side effect that is sequenced-before or sequenced-after the volatile access. This makes volatile objects suitable for communication with a signal handler, but not with another thread of execution, see std::memory_order). 
+
+说人话，就是 每次通过一个带有volatile的泛左值表达式类型的获取，都会因为 `purposes of optimization`，当作是一个可见的副作用。
+在单线程的执行中，volatile不可能被优化掉，或者是与另外一个可见的side-effect重新排序。这个使volatile修饰的对象能够更方便的和signal handler通信，但不与其他线程的对象通信。
+as-if 原则 顺序可见性指 volatile 是可见的，输入输出也是可见的，证明不会对volatile进行重排。 
 
 
+### `purposes of optimization`[<sup>[4]</sup>](#refer-anchor)
+
+允许进行任何不改变程序可观察行为的代码转换。 
+
+只要保证以下几点，就允许 C++ 编译器对程序进行任何修改：
+
+1) 对 volatile 对象的访问（读或写）严格按照它们所发生的表达式的语义进行。特别地，它们和同一线程中的其他 volatile 访问之间不会发生重排。
+2) 程序终止时，写入文件的数据完全如同程序是按照所写的代码那样执行的一般。
+3) 发送到交互式设备的提示文本将在程序等待输入之前显示出来。
+4) 如果 ISO C 编译指示 #pragma STDC FENV_ACCESS 受到支持并被设为 ON，则保证浮点算术运算符和函数调用会观察到对浮点环境（浮点异常和舍入模式）的修改，就如同按照所写的代码那样执行一般，除非
+        除去转型和赋值以外的任何浮点表达式的结果可能有不同于表达式本身的浮点范围和精度（参见 FLT_EVAL_METHOD ）
+        尽管如此，任何浮点表达式的中间结果可能按照无限的范围和精度进行计算（除非 #pragma STDC FP_CONTRACT 为 OFF ）
+
+特别注意
+
+由于编译器（通常）不能分析一个外部库的代码，以确定它是否执行 I/O 或者 volatile 访问，因此第三方库的调用同样不受这种优化的影响。然而，标准库调用可能会在优化过程中被其它调用替换，被消除，或者被添加到程序中。静态连接的第三方库代码可能会参与连接时优化。
 
 
-
-
-## std::atomic 
 
 # 引用
 <div id="refer-anchor">
@@ -140,3 +160,4 @@ while (true); ./a.out | head -n 1000 | uniq -c
 
 [3] https://en.cppreference.com/w/cpp/language/memory_model
 
+[4] https://zh.cppreference.com/w/cpp/language/as_if
