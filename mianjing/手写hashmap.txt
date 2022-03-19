@@ -1,0 +1,32 @@
+/*
+    某厂要我这样写hashmap，我很菜，在txt下没法用c语言写hashmap。所以重写一份，
+*/
+struct Node{
+    int value;
+    struct Node *next;
+};
+
+struct Node* hashMap[256];
+
+void sethashmap(int key,int value){
+    int pos = key % 256;
+    if  (hashMap[pos] == NULL){
+        struct Node *tmp = malloc(sizeof(Node));
+        hashMap[pos] = tmp;
+    }
+    else {
+        struct Node *tmp = hashMap[pos];
+        while (1){
+            if (tmp->key == key) {
+                tmp->value = value;
+                return;
+            }
+            if (tmp->next == NULL) break;
+            tmp = tmp -> next;
+        }
+        struct Node *lst = malloc(sizeof(Node));
+        lst->key = key; lst->value = value;
+        tmp->next = lst;
+        return;
+    }
+}
