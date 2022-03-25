@@ -60,15 +60,18 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
   struct co *ret = (struct co *)malloc(sizeof(struct co));
   co_init(ret);
-
+  asm volatile("");
+  
   func(arg);
-  return NULL;
+  return ret;
 }
 
 void co_wait(struct co *co)
 {
+
 }
 
 void co_yield()
 {
+
 }
